@@ -1,7 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import pg from "pg";
-import dotenv from "dotenv"
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -85,29 +85,40 @@ app.post("/add", async (req, res) => {
 });
 
 // REMOVE a specific country
-app.post("/user", async (req, res) => {
-  if (req.body.add === "new") {
-    res.render("new.ejs");
-  } else {
-    currentUserId = req.body.user;
+// NEW FEATURE: Remove specific country
+// app.post("/remove", async (req, res) => {
+//   const countryCode = req.body["country_code"];
+//   try {
+//     await db.query("DELETE FROM visited_countries WHERE country_code = $1 AND user_id = $2", [countryCode, currentUserId]);
+//     res.redirect("/");
+//   } catch (err) {
+//     console.log(err);
+//     const countries = await checkVisited();
+//     res.render("index.ejs", {
+//       countries: countries,
+//       total: countries.length,
+//       error: "Failed to remove the country, try again.",
+//     });
+//   }
+// });
+
+// REMOVE all countries
+// NEW FEATURE: Remove all countries
+app.post("/remove-all", async (req, res) => {
+  try {
+    await db.query("DELETE FROM visited_countries WHERE user_id = $1", [currentUserId]);
     res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    const countries = await checkVisited();
+    res.render("index.ejs", {
+      countries: countries,
+      total: countries.length,
+      error: "Failed to remove all countries, try again.",
+    });
   }
 });
 
-app.post("/new", async (req, res) => {
-  const name = req.body.name;
-  const color = req.body.color;
-
-  const result = await db.query(
-    "INSERT INTO users (name, color) VALUES($1, $2) RETURNING *;",
-    [name, color]
-  );
-
-  const id = result.rows[0].id;
-  currentUserId = id;
-
-  res.redirect("/");
-});
 
 // NEW FEATURE: Change user
 app.post("/user", async (req, res) => {
