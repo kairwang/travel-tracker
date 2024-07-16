@@ -9,10 +9,23 @@
 </head>
 
 <body>
-  <form action="/add" method="post">
-    <input type="text" name="country" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
-    <button type="submit">Add</button>
-  </form>
+  <div class="form-container">
+    <form action="/add" method="post" class="form-group">
+      <input type="text" name="country" autofocus placeholder="<%= locals.error ? error :  'Enter country name'%>">
+      <button type="submit">Add</button>
+    </form>
+
+      <!-- Form to remove a specific country -->
+    <form action="/remove" method="post" class="form-group">
+      <input type="text" name="country_code" placeholder="Enter country code to remove">
+      <button type="submit">Remove</button>
+    </form>
+    
+    <!-- Form to remove all countries -->
+    <form action="/remove-all" method="post" class="form-group">
+      <button type="submit">Remove All</button>
+    </form>
+  </div>
 
   <section class="ag-canvas">
     <svg class="ag-canvas_svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"

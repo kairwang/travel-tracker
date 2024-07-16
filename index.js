@@ -74,6 +74,39 @@ app.post("/add", async (req, res) => {
   }
 });
 
+// REMOVE a specific country
+app.post("/remove", async (req, res) => {
+  const countryCode = req.body["country_code"];
+  try {
+    await db.query("DELETE FROM visited_countries WHERE country_code = $1", [countryCode]);
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    const countries = await checkVisited();
+    res.render("index.ejs", {
+      countries: countries,
+      total: countries.length,
+      error: "Failed to remove the country, try again.",
+    });
+  }
+});
+
+// REMOVE all countries
+app.post("/remove-all", async (req, res) => {
+  try {
+    await db.query("DELETE FROM visited_countries");
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+    const countries = await checkVisited();
+    res.render("index.ejs", {
+      countries: countries,
+      total: countries.length,
+      error: "Failed to remove all countries, try again.",
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
 });
